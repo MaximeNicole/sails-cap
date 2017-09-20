@@ -11,6 +11,7 @@
 
 module.exports.bootstrap = function(cb) {
 
+
   if(sails.config.talent.iniActivate) {
     var fs = require('fs')
       , ini = require('ini');
@@ -39,6 +40,9 @@ module.exports.bootstrap = function(cb) {
         }
       });
     });
+
+    sails.log.debug("Connections:", sails.config.connections);
+    sails.emit('hook:dynamic-orm:reload');
   }
 
 

@@ -97,6 +97,10 @@ module.exports = {
       columnName: 'category_id'
     }
 
+  },
+
+  getModel: function (dbName) {
+    return models[dbName];
   }
 
 };

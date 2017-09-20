@@ -22,7 +22,8 @@ module.exports = {
   // }
 
   talent: {
-    iniActivate: false
+    iniActivate: true,
+    iniFile: '/var/www/stepnet/capgemini-api/database.ini'
   }
 
 };
