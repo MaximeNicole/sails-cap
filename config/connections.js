@@ -19,30 +19,38 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.connections.html
  */
 
-module.exports.connections = {
+var fs = require('fs')
+  , ini = require('ini');
 
-  /***************************************************************************
-  *                                                                          *
-  * MySQL is the world's most popular relational database.                   *
-  * http://en.wikipedia.org/wiki/MySQL                                       *
-  *                                                                          *
-  * Run: npm install sails-mysql                                             *
-  *                                                                          *
-  ***************************************************************************/
+var config = ini.parse(fs.readFileSync('/var/www/stepnet/capgemini-api/database.ini', 'utf-8'));
+var tables = ['global', 'uk'];
+var configDB = config['development : production'];
+var connections = {
   talentGlobalProd: {
     adapter: 'sails-mysql',
     host: 'localhost',
     user: 'root', //optional
     password: 'P_2L0oZR', //optional
     database: 'talent_prod' //optional
-  },
-
-  uk: {
-    adapter: 'sails-mysql',
-    host: 'localhost',
-    user: 'root', //optional
-    password: 'P_2L0oZR', //optional
-    database: 'talent_uk_prod' //optional
-  },
-
+  }
 };
+Object.keys(configDB).map(function (objectKey) {
+  var find = false;
+  tables.forEach(function (table, index, array) {
+    if (objectKey.indexOf(table) !== -1) {
+      // sails.log.debug("Value: ", value, objectKey);
+      find = table;
+    }
+    if (array.length === (index + 1) && find !== false) {
+      connections[table] = {
+        adapter: 'sails-mysql',
+        host: 'localhost',
+        user: configDB['resources.multidb.' + table + '.username'],
+        password: configDB['resources.multidb.' + table + '.password'],
+        database: configDB['resources.multidb.' + table + '.dbname']
+      };
+    }
+  });
+});
+
+module.exports.connections = connections;
